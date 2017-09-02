@@ -1,6 +1,11 @@
 //$Id$
 package home.utils.codeinject;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+
+import javassist.CannotCompileException;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -19,8 +24,8 @@ public class JarChangeTest {
 		} 
 		if(sourceClassName.contains(".")){sourceClassName=sourceClassName.replace(".", "/");}
 		CtClass cc = pool.get(sourceClassName.replace("/", "."));
-		CtClass[] methodParameters = new CtClass[parameters.length>0?parameters.length:0];
-		if(parameters.length>0)
+		CtClass[] methodParameters = new CtClass[parameters[0]!=""?parameters.length:0];
+		if(parameters[0]!="")
 		{	  
 			for (int i =0 ; i< parameters.length;i++)
 			{
@@ -29,7 +34,14 @@ public class JarChangeTest {
 			}
 		}
 		CtMethod cm = cc.getDeclaredMethod(methodName, methodParameters);
-		cm.insertAt(lineNumber, codeToInject);
+		try{
+			cm.insertAt(lineNumber, codeToInject);
+		}
+		catch(CannotCompileException e)
+		{
+			throw new CannotCompileException(e.getMessage()+" ( error in "+codeToInject+" )");
+		}
+		
 		System.out.println("Injected "+codeToInject+"\n \t\tat "+lineNumber+"\n \t\tin "+sourceClassName+" \n\t\t inside jar: "+JarPath);
 		byte[] b = cc.toBytecode(); 
 
@@ -67,14 +79,23 @@ public class JarChangeTest {
 		CtMethod cm = cc.getDeclaredMethod(methodName, methodParameters);
 		if(afterBefore.equalsIgnoreCase("after"))
 		{
-			cm.insertAfter(codeToInject);
+			try{
+				cm.insertAfter(codeToInject);			}
+			catch(CannotCompileException e)
+			{
+				throw new CannotCompileException(e.getMessage()+" ( error in "+codeToInject+" )");
+			}
 			System.out.println("Injected "+codeToInject+"\n \t\tat "+lineNumber+"\n \t\tin "+sourceClassName+" \n\t\t inside jar: "+JarPath);
 
 		}
 		else
 		{
-			cm.insertBefore(codeToInject);
-			System.out.println("Injected "+codeToInject+"\n \t\tat "+lineNumber+"\n \t\tin "+sourceClassName+" \n\t\t inside jar: "+JarPath);
+			try{
+				cm.insertBefore(codeToInject);			}
+			catch(CannotCompileException e)
+			{
+				throw new CannotCompileException(e.getMessage()+" ( error in "+codeToInject+" )");
+			}			System.out.println("Injected "+codeToInject+"\n \t\tat "+lineNumber+"\n \t\tin "+sourceClassName+" \n\t\t inside jar: "+JarPath);
 
 		}
 
@@ -115,4 +136,5 @@ public class JarChangeTest {
 		return classExists;
 
 	}
+
 }

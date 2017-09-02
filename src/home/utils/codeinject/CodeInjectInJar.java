@@ -22,6 +22,11 @@ public class CodeInjectInJar {
 	}
 	protected static String getFile(String sourceClassName, String sourcePath)
 	{
+		if(sourcePath.charAt(sourcePath.length()-1) != ('/'))
+		{
+			sourcePath = sourcePath +"/";
+		}
+		sourceClassName = sourceClassName.replace(".", "/");
 		return (sourcePath+sourceClassName+".java");
 	}
 	public static void setJarAndClassPath(String jarFilePath, String[] jarClassPath)
