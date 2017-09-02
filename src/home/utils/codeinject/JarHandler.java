@@ -10,6 +10,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
+import org.apache.commons.io.FileUtils;
+
 import javassist.NotFoundException;
 public class JarHandler{
 	public void replaceJarFile(String jarPathAndName,byte[] fileByteCode,String fileName) throws IOException, NotFoundException {
@@ -109,7 +111,7 @@ public class JarHandler{
 			throw new NotFoundException("Given Input Jar : "+jarPathAndName + " doesn't exist");
 		}
 	}
-	public void createJarFile(String jarPathAndName,String outputJarName, byte[] fileByteCode,String fileName) throws IOException, NotFoundException {
+	public void createJarFile(String jarPathAndName,String outputJarName, byte[] fileByteCode,String fileName) throws Exception {
 		if(new File(jarPathAndName).exists()) 
 		{File jarFile = new File(jarPathAndName);
 		File tempJarFile = new File(jarPathAndName + ".tmp");
@@ -195,9 +197,12 @@ public class JarHandler{
 
 
 		if (jarWasUpdated) {            
-
-			tempJarFile.renameTo(new File(outputJarName));
-			System.out.println(outputJarName + " created.");
+			if(new File(outputJarName.substring(0,outputJarName.lastIndexOf("/"))).isDirectory())
+			{
+				FileUtils.copyFile((tempJarFile), new File(outputJarName));
+	//			tempJarFile.renameTo(new File(outputJarName));
+			System.out.println(outputJarName + " created.");}
+			else{throw new Exception(outputJarName.substring(0,outputJarName.lastIndexOf("/"))+" is not a valid directory");}
 
 		}
 		}
@@ -207,5 +212,13 @@ public class JarHandler{
 			System.out.println("Given Input Jar : "+jarPathAndName + " doesn't exist");
 			throw new NotFoundException("Given Input Jar : "+jarPathAndName + " doesn't exist");
 		}
+	}
+	public boolean isOutputDirExists(String destinationJarPath)
+	{
+		destinationJarPath =destinationJarPath.substring(0,destinationJarPath.lastIndexOf("/"));
+		if((new File(destinationJarPath)).exists())
+			{return true;}
+		else
+			{return false;}
 	}
 }
