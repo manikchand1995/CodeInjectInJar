@@ -200,7 +200,7 @@ public class JarHandler{
 			if(new File(outputJarName.substring(0,outputJarName.lastIndexOf("/"))).isDirectory())
 			{
 				FileUtils.copyFile((tempJarFile), new File(outputJarName));
-	//			tempJarFile.renameTo(new File(outputJarName));
+				tempJarFile.delete();
 			System.out.println(outputJarName + " created.");}
 			else{throw new Exception(outputJarName.substring(0,outputJarName.lastIndexOf("/"))+" is not a valid directory");}
 
