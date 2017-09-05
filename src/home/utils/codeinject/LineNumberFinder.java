@@ -10,7 +10,6 @@ import java.util.List;
 public class LineNumberFinder {
 
 
-    @SuppressWarnings("finally")
 	public static List<String> searchWord(String key,String filePath) throws IOException {
 
         LineNumberReader lnr;
@@ -38,6 +37,7 @@ public class LineNumberFinder {
 				lineNumbers.addAll(recursiveSearch(lnr.readLine(), key, lnr,filePath));
 			
     }
+        lnr.close();
         return lineNumbers;
 
 }
