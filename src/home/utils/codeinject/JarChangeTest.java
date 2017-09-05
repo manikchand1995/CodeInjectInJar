@@ -2,11 +2,17 @@
 package home.utils.codeinject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javassist.CannotCompileException;
 import javassist.ClassClassPath;
+import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -17,10 +23,11 @@ public class JarChangeTest {
 	public static void handleJarOperation(String[] classPath, String sourceClassName, String methodName, String[] parameters, String codeToInject, String JarPath, String destinationJarPath, int lineNumber) throws Exception
 	{
 		ClassPool pool = new ClassPool(true);
+		ClassPath[] cp = new ClassPath[classPath.length];
 		if(isClassExistsinJar(sourceClassName, JarPath))
-		{	for(String path : classPath)
+		{	for(int i = 0; i<classPath.length; i++)
 		{
-			pool.insertClassPath(path);
+			 cp[i] = pool.insertClassPath(classPath[i]);
 		} 
 		if(sourceClassName.contains(".")){sourceClassName=sourceClassName.replace(".", "/");}
 		CtClass cc = pool.get(sourceClassName.replace("/", "."));
@@ -45,8 +52,11 @@ public class JarChangeTest {
 		System.out.println("Injected "+codeToInject+"\n \t\tat "+lineNumber+"\n \t\tin "+sourceClassName+" \n\t\t inside jar: "+JarPath);
 		byte[] b = cc.toBytecode(); 
 
-
-		pool.removeClassPath(new ClassClassPath(cc.getClass()));
+for(int i = 0; i<cp.length; i++)
+{
+	pool.removeClassPath(cp[i]);
+}
+//		pool.removeClassPath(pool.insertClassPath(JarPath));
 		JarHandler jarHandler = new JarHandler();
 		jarHandler.createJarFile(JarPath,destinationJarPath, b, sourceClassName+".class");
 		}
@@ -59,10 +69,11 @@ public class JarChangeTest {
 	public static void handleJarOperation(String[] classPath, String sourceClassName, String methodName,String[] parameters, String codeToInject, String JarPath, String destinationJarPath, int lineNumber, String afterBefore) throws Exception
 	{
 		ClassPool pool = new ClassPool(true);
+		ClassPath[] cp = new ClassPath[classPath.length];
 		if(isClassExistsinJar(sourceClassName, JarPath))
-		{ for(String path : classPath)
+		{	for(int i = 0; i<classPath.length; i++)
 		{
-			pool.appendClassPath(path);
+			 cp[i] = pool.insertClassPath(classPath[i]);
 		} 
 		if(sourceClassName.contains("/")){sourceClassName=sourceClassName.replace("/", ".");}
 		CtClass cc = pool.get(sourceClassName);
@@ -100,9 +111,13 @@ public class JarChangeTest {
 		}
 
 		byte[] b = cc.toBytecode(); 
+		for(int i = 0; i<cp.length; i++)
+		{
+			pool.removeClassPath(cp[i]);
+		}
 
-
-		pool.removeClassPath(new ClassClassPath(cc.getClass()));
+//		pool.removeClassPath(new ClassClassPath(cc.getClass()));
+//		pool.removeClassPath(pool.insertClassPath(JarPath));
 		JarHandler jarHandler = new JarHandler();
 		jarHandler.createJarFile(JarPath,destinationJarPath, b, sourceClassName+".class");
 		}
@@ -115,26 +130,31 @@ public class JarChangeTest {
 	public static boolean isClassExistsinJar(String className, String jarPath) 
 	{
 		Boolean classExists = false;
-		ClassPool pool = new ClassPool(true);
-		try {
-			pool.insertClassPath(jarPath);
-
-			{  try {
-				@SuppressWarnings("unused")
-				CtClass cc = pool.get(className.replace("/", "."));
-				classExists = true;
-			} catch (NotFoundException e) {
-				classExists=false;
-				System.out.println(className +" doesn't exist in "+jarPath);
-				e.printStackTrace();
+		try 
+		{
+			className = className.replace(".", "/");
+			FileInputStream jarFileStream = new FileInputStream(jarPath);
+			ZipInputStream zip = new ZipInputStream(new FileInputStream(jarPath)) ;
+			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) 
+			{
+			    if (entry.getName().contains(className)) 
+			    {
+			    	classExists = true;
+			    }
 			}
-			}
-		} catch (NotFoundException e1) {
-			System.out.println("ClassPath : "+jarPath+"doesn't exist");
-			e1.printStackTrace();
+			zip.close();
+			jarFileStream.close();
 		}
+			 catch (Exception e) {
+			System.out.println("ClassPath : "+jarPath+"doesn't exist");
+			e.printStackTrace();
+		}
+
 		return classExists;
 
+
+		
+		
 	}
 
 }
