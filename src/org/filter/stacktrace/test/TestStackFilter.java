@@ -158,7 +158,7 @@ public class TestStackFilter
 	{
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
-		{System.out.println(StackFilter.getStackAsString(e));}
+		{System.out.println(StackFilter.getStackTraceAsString(e));}
 	}
 	@AfterClass
 	public static void tearDown() 

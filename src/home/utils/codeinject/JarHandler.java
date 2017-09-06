@@ -70,8 +70,7 @@ public class JarHandler{
 						while ((bytesRead = entryStream.read(buffer)) != -1) {
 							tempJar.write(buffer, 0, bytesRead);
 						}
-					}else
-					{ System.out.println("Byte code diff injected");}
+					}
 				}
 				if(entryStream!=null)
 					entryStream.close();
@@ -101,7 +100,7 @@ public class JarHandler{
 		if (jarWasUpdated) {            
 			if(jarFile.delete()){
 				tempJarFile.renameTo(jarFile);
-				System.out.println(jarPathAndName + " updated.");
+				System.out.println("injected code inside "+jarPathAndName);
 			}else
 				System.out.println("Could Not Delete JAR File");
 		}}
@@ -167,8 +166,7 @@ public class JarHandler{
 						while ((bytesRead = entryStream.read(buffer)) != -1) {
 							tempJar.write(buffer, 0, bytesRead);
 						}
-					}else
-					{ System.out.println("Byte code diff injected");}
+					}
 				}
 				if(entryStream!=null)
 					entryStream.close();
@@ -200,8 +198,8 @@ public class JarHandler{
 			if(new File(outputJarName.substring(0,outputJarName.lastIndexOf("/"))).isDirectory())
 			{
 				FileUtils.copyFile((tempJarFile), new File(outputJarName));
-	//			tempJarFile.renameTo(new File(outputJarName));
-			System.out.println(outputJarName + " created.");}
+				tempJarFile.delete();
+			System.out.println("injected code inside "+outputJarName);}
 			else{throw new Exception(outputJarName.substring(0,outputJarName.lastIndexOf("/"))+" is not a valid directory");}
 
 		}

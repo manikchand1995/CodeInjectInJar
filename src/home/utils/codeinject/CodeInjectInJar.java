@@ -67,7 +67,7 @@ public class CodeInjectInJar {
 		for(int count=0;count<lineNumbers.size();count++)
 		{
 			int lineNumberInt = Integer.parseInt(lineNumbers.get(count));
-			lineNumberInt = lineNumberInt + count;
+		//	lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt+1);
 		}
 
@@ -82,7 +82,7 @@ public class CodeInjectInJar {
 		for(int count=0;count<lineNumbers.size();count++)
 		{
 			int lineNumberInt = Integer.parseInt(lineNumbers.get(count));
-			lineNumberInt = lineNumberInt + count;
+	//		lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt+1);
 		}
 	}
@@ -101,7 +101,7 @@ public class CodeInjectInJar {
 		for(int count=0;count<lineNumbers.size();count++)
 		{
 			int lineNumberInt = Integer.parseInt(lineNumbers.get(count));
-			lineNumberInt = lineNumberInt + count;
+	//		lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt-1);
 		}
 	}
@@ -115,7 +115,7 @@ public class CodeInjectInJar {
 		for(int count=0;count<lineNumbers.size();count++)
 		{
 			int lineNumberInt = Integer.parseInt(lineNumbers.get(count));
-			lineNumberInt = lineNumberInt + count;
+	//		lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt-1);
 		}
 	}
@@ -133,7 +133,8 @@ public class CodeInjectInJar {
 
 		for(int count=0;count<lineNumber.length;count++)
 		{
-			int lineNumberInt = lineNumber[count] + count;
+			int lineNumberInt = lineNumber[count] ;
+	//		lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt);
 		}
 	}
@@ -157,7 +158,8 @@ public class CodeInjectInJar {
 		destinationJarPath = jarPath.substring(0, jarPath.length() - 4)+"_injected.jar";
 		for(int count=0;count<lineNumber.length;count++)
 		{
-			int lineNumberInt = lineNumber[count] + count;
+			int lineNumberInt = lineNumber[count] ;
+//			lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt);
 		}
 	}
@@ -168,7 +170,8 @@ public class CodeInjectInJar {
 		destinationJarPath = destinationJarName;
 		for(int count=0;count<lineNumber.length;count++)
 		{
-			int lineNumberInt = lineNumber[count] + count;
+			int lineNumberInt = lineNumber[count] ;
+//			lineNumberInt = lineNumberInt + count;
 			JarChangeTest.handleJarOperation(classPath, sourceClassName, methodName,methodParameters, codeToInject, jarPath, destinationJarPath, lineNumberInt);
 		}
 	}

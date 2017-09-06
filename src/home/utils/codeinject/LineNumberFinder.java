@@ -10,7 +10,6 @@ import java.util.List;
 public class LineNumberFinder {
 
 
-    @SuppressWarnings("finally")
 	public static List<String> searchWord(String key,String filePath) throws IOException {
 
         LineNumberReader lnr;
@@ -32,12 +31,13 @@ public class LineNumberFinder {
 
                 results.add("Line " + lnr.getLineNumber() + ": " + currentLineText);
                 lineNumbers.add(String.valueOf(lnr.getLineNumber()));
-                System.out.println("Line : "+key+"\n \t is found at "+lnr.getLineNumber()+" in "+filePath);
+                System.out.println("Line <-- "+key+" --> is found at "+lnr.getLineNumber()+" in "+filePath);
             }
             
 				lineNumbers.addAll(recursiveSearch(lnr.readLine(), key, lnr,filePath));
 			
     }
+        lnr.close();
         return lineNumbers;
 
 }
