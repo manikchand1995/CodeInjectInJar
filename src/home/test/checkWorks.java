@@ -1,25 +1,18 @@
 package home.test;
-import home.utils.codeinject.CodeInjectInJar;
-import home.utils.logger.MyLogger;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.XML;
 
 public class checkWorks {
 
@@ -54,34 +47,148 @@ public class checkWorks {
 		//		long endTime = System.currentTimeMillis();
 		//		double totalTime = (double)(endTime - startTime)/1000;
 		//		System.out.println(totalTime);
-		Boolean classExists = false;
-		String className = "com.adventnet.client.components.table.web.TableRetrieverAction";
-		String jarPath = "/home/likewise-open/ZOHOCORP/mani-5328/builds/AdventNet_test/MickeyLite/lib/AdventNetClientComponents.jar";
-		try 
+//		Boolean classExists = false;
+//		String className = "com.adventnet.client.components.table.web.TableRetrieverAction";
+//		String jarPath = "/home/likewise-open/ZOHOCORP/mani-5328/builds/AdventNet_test/MickeyLite/lib/AdventNetClientComponents.jar";
+//		try 
+//		{
+//			className = className.replace(".", "/");
+//			FileInputStream jarFileStream = new FileInputStream(jarPath);
+//			ZipInputStream zip = new ZipInputStream(new FileInputStream(jarPath)) ;
+//			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) 
+//			{
+//			    if (entry.getName().contains(className)) 
+//			    {
+//			    	classExists = true;
+//			    	System.out.print("1");
+//			    }
+//			}
+//		    System.out.println(classExists);
+//
+//			zip.close();
+//			jarFileStream.close();
+//		}
+//			 catch (Exception e) {
+//			System.out.println("ClassPath : "+jarPath+"doesn't exist");
+//			e.printStackTrace();
+//		}
+
+		
+		/*		String line32 = Files.readAllLines(Paths.get("/home/likewise-open/ZOHOCORP/mani-5328/eclipse/ZIDE/container/newclient/components/webclient/src/com/adventnet/client/components/table/web/TableRetrieverAction.java")).get(186-1);
+				System.out.println(line32);
+		 */
+		File bkptFile = (new File("/home/likewise-open/ZOHOCORP/mani-5328/builds/AdventNet/MickeyLite/codeinject/data/Untitled.bkpt"));
+		BufferedReader br = new BufferedReader(new FileReader(bkptFile));
+		String line;
+		StringBuilder sb = new StringBuilder();
+
+		while((line=br.readLine())!= null){
+		    sb.append(line.trim());
+		}
+		
+		br.close();
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		DocumentBuilder builder = factory.newDocumentBuilder();
+//		Document document = builder.parse(new InputSource(new StringReader(new String(sb))));
+//        XPath xPath = XPathFactory.newInstance().newXPath();
+//        Node node = (Node) xPath.evaluate("//breakpoints/breakpoint/marker/attrib[@name='org.eclipse.jdt.debug.core.typeName']/@value", document, XPathConstants.NODE);
+//        String className = node.getNodeValue();
+//        System.out.println(className);
+//
+//        node = (Node) xPath.evaluate("//breakpoints/breakpoint/marker/attrib[@name='message']/@value", document, XPathConstants.NODE);
+//        String methodLineNumber = node.getNodeValue();
+//        String methodName = (methodLineNumber.substring(methodLineNumber.lastIndexOf("-")+1).trim());
+//System.out.println(methodName);
+//String lineNumberDummy = (methodLineNumber.substring(methodLineNumber.indexOf("[")+1,methodLineNumber.indexOf("]")).trim());
+//String lineNumber = lineNumberDummy.substring(lineNumberDummy.indexOf(":")+1).trim();
+//       System.out.println(lineNumber);
+//        node = (Node) xPath.evaluate("//breakpoints/breakpoint/marker/attrib[@name='org.eclipse.jdt.debug.core.condition']/@value", document, XPathConstants.NODE);
+//        String injection = node.getNodeValue();
+//	 System.out.println(injection);
+//     node = (Node) xPath.evaluate("//breakpoints/breakpoint/resource/@path", document, XPathConstants.NODE);
+//     String sourcePath = node.getNodeValue();
+//     System.out.println(sourcePath);
+		JSONObject bkpt = XML.toJSONObject(new String(sb));
+System.out.println(bkpt);
+JSONArray bkptArray = new JSONArray();
+Object bkpointObject =((JSONObject)bkpt.get("breakpoints")).get("breakpoint");
+if(bkpointObject instanceof JSONObject)
+{
+	bkptArray =  bkptArray.put((JSONObject)bkpointObject);
+
+}
+else
+{
+	bkptArray =  (JSONArray)bkpointObject;
+}
+
+for(int i=0; i<bkptArray.length(); i++)
+{
+	JSONObject finalJSON = new JSONObject();
+	JSONObject bkptOne = (JSONObject) bkptArray.get(i);
+	String source = ((JSONObject)bkptOne.get("resource")).getString("path");
+//	System.out.println(source);
+	finalJSON.put("sourcePath", source);
+	JSONArray attribArray = ((JSONObject)bkptOne.get("marker")).getJSONArray("attrib");
+	for(int num=0; num<attribArray.length(); num++)
+	{
+	//	System.out.println(((JSONObject)attribArray.get(num)).getString("name"));
+		if(((JSONObject)attribArray.get(num)).getString("name").equalsIgnoreCase("message"))
 		{
-			className = className.replace(".", "/");
-			FileInputStream jarFileStream = new FileInputStream(jarPath);
-			ZipInputStream zip = new ZipInputStream(new FileInputStream(jarPath)) ;
-			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) 
-			{
-			    if (entry.getName().contains(className)) 
-			    {
-			    	classExists = true;
-			    	System.out.print("1");
-			    }
-			}
-		    System.out.println(classExists);
-
-			zip.close();
-			jarFileStream.close();
+			String methodLineNumber = (((JSONObject)attribArray.get(num)).getString("value"));
+			String methodName = (methodLineNumber.substring(methodLineNumber.lastIndexOf("-")+1).trim());
+			finalJSON.put("method", methodName);
+			String lineNumberDummy = (methodLineNumber.substring(methodLineNumber.indexOf("[")+1,methodLineNumber.indexOf("]")).trim());
+			String lineNumber = lineNumberDummy.substring(lineNumberDummy.indexOf(":")+1).trim();
+			finalJSON.put("lineNumber", lineNumber);
 		}
-			 catch (Exception e) {
-			System.out.println("ClassPath : "+jarPath+"doesn't exist");
-			e.printStackTrace();
+		if(((JSONObject)attribArray.get(num)).getString("name").equalsIgnoreCase("org.eclipse.jdt.debug.core.typeName"))
+		{
+			String className = (((JSONObject)attribArray.get(num)).getString("value"));
+			finalJSON.put("class", className);
 		}
+		if(((JSONObject)attribArray.get(num)).getString("name").equalsIgnoreCase("org.eclipse.jdt.debug.core.condition"))
+		{
+			String condition = (((JSONObject)attribArray.get(num)).getString("value"));
+			JSONObject conditionJSON = new JSONObject(condition);
+			
+			finalJSON.put("codeToInject", conditionJSON.getString("codeToInject"));
+			finalJSON.put("variableToCollect", conditionJSON.getString("variableToCollect"));
 
+		}
 	}
-
+	try {
+		FileWriter fileWriter = new FileWriter("/home/likewise-open/ZOHOCORP/mani-5328/Desktop/Untitled"+i+".json");
+		fileWriter.write(finalJSON.toString());
+		fileWriter.close();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+}
+	//	bkpt.getString(key)
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//		JSONObject json = new JSONObject("{\"class\":\"com.adventnet.client.components.table.web.SqlViewController\",\"data\":[{\"method\":\"updateViewModel(com.adventnet.client.view.web.ViewContext)\",\"searchString\":\"viewModel.getTableTransformerContext().setRequest(viewCtx.getRequest());\",\"variableToCollect\":\"limitedSql\"},{\"method\":\"updateViewModel(com.adventnet.client.view.web.ViewContext)\",\"searchString\":\"viewModel.getTableTransformerContext().setRequest(viewCtx.getRequest());\",\"codeToInject\":\"String viewname = viewCtx.getModel().getViewName();System.out.println(\\\"manik\\\");\",\"variableToCollect\":\"viewname\"}]}");
+//		String xml = XML.toString(json);
+//		//System.out.println(xml);
+//		System.out.println(XML.toJSONObject("<data><searchString>viewModel.getTableTransformerContext().setRequest(viewCtx.getRequest());</searchString><variableToCollect>limitedSql</variableToCollect><method>updateViewModel(com.adventnet.client.view.web.ViewContext)</method></data><data><searchString>viewModel.getTableTransformerContext().setRequest(viewCtx.getRequest());</searchString><variableToCollect>viewname</variableToCollect><method>updateViewModel(com.adventnet.client.view.web.ViewContext)</method><codeToInject>String viewname = viewCtx.getModel().getViewName();System.out.println(&quot;manik&quot;);</codeToInject></data><class>com.adventnet.client.components.table.web.SqlViewController</class>"));
+	
+	}
+	
+private static String getStringInLineNumber(int lineNumber) throws IOException
+{
+	String line32 = Files.readAllLines(Paths.get("/home/likewise-open/ZOHOCORP/mani-5328/eclipse/ZIDE/container/newclient/components/webclient/src/com/adventnet/client/components/table/web/TableRetrieverAction.java")).get(186-1);
+	return (line32);
+}
 	private static BufferedImage getDifferenceImage(BufferedImage bufferedImageRecorded, BufferedImage bufferedImageFromDB)
 			throws IOException
 	{

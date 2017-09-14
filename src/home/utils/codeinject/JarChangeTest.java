@@ -1,17 +1,11 @@
 //$Id$
 package home.utils.codeinject;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javassist.CannotCompileException;
-import javassist.ClassClassPath;
 import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -27,13 +21,13 @@ public class JarChangeTest {
 		if(isClassExistsinJar(sourceClassName, JarPath))
 		{	for(int i = 0; i<classPath.length; i++)
 		{
-			 cp[i] = pool.insertClassPath(classPath[i]);
+			cp[i] = pool.insertClassPath(classPath[i]);
 		} 
-//		System.out.println();
-//		pool.removeClassPath(new ClassClassPath(pool.get(sourceClassName).toClass()));
-//		ClassPool dummyClassPool = new ClassPool(true);
-//		ClassPath ownJarPath = dummyClassPool.insertClassPath(JarPath);
-//		pool.removeClassPath(ownJarPath);
+		//		System.out.println();
+		//		pool.removeClassPath(new ClassClassPath(pool.get(sourceClassName).toClass()));
+		//		ClassPool dummyClassPool = new ClassPool(true);
+		//		ClassPath ownJarPath = dummyClassPool.insertClassPath(JarPath);
+		//		pool.removeClassPath(ownJarPath);
 
 		if(sourceClassName.contains(".")){sourceClassName=sourceClassName.replace(".", "/");}
 		CtClass cc = pool.get(sourceClassName.replace("/", "."));
@@ -54,15 +48,15 @@ public class JarChangeTest {
 		{
 			throw new CannotCompileException(e.getMessage()+" ( error in "+codeToInject+" )");
 		}
-		
-		System.out.println("Injected <-- "+codeToInject+" --> at line number "+lineNumber+" inside class : "+sourceClassName);
+
+		//		System.out.println("Injected <-- "+codeToInject+" --> at line number "+lineNumber+" inside class : "+sourceClassName);
 		byte[] b = cc.toBytecode(); 
 
-for(int i = 0; i<cp.length; i++)
-{
-	pool.removeClassPath(cp[i]);
-}
-//		pool.removeClassPath(pool.insertClassPath(JarPath));
+		for(int i = 0; i<cp.length; i++)
+		{
+			pool.removeClassPath(cp[i]);
+		}
+		//		pool.removeClassPath(pool.insertClassPath(JarPath));
 		JarHandler jarHandler = new JarHandler();
 		jarHandler.createJarFile(JarPath,destinationJarPath, b, sourceClassName+".class");
 		}
@@ -79,11 +73,11 @@ for(int i = 0; i<cp.length; i++)
 		if(isClassExistsinJar(sourceClassName, JarPath))
 		{	for(int i = 0; i<classPath.length; i++)
 		{
-			 cp[i] = pool.insertClassPath(classPath[i]);
+			cp[i] = pool.insertClassPath(classPath[i]);
 		} 
-//		ClassPool dummyClassPool = new ClassPool(true);
-//		ClassPath ownJarPath = dummyClassPool.insertClassPath(JarPath);
-//		pool.removeClassPath(ownJarPath);
+		//		ClassPool dummyClassPool = new ClassPool(true);
+		//		ClassPath ownJarPath = dummyClassPool.insertClassPath(JarPath);
+		//		pool.removeClassPath(ownJarPath);
 
 		if(sourceClassName.contains("/")){sourceClassName=sourceClassName.replace("/", ".");}
 		CtClass cc = pool.get(sourceClassName);
@@ -106,7 +100,7 @@ for(int i = 0; i<cp.length; i++)
 			{
 				throw new CannotCompileException(e.getMessage()+" ( error in "+codeToInject+" )");
 			}
-			System.out.println("Injected <-- "+codeToInject+" --> at line number "+lineNumber+" inside Class : "+sourceClassName);
+			//			System.out.println("Injected <-- "+codeToInject+" --> at line number "+lineNumber+" inside Class : "+sourceClassName);
 
 		}
 		else
@@ -116,7 +110,8 @@ for(int i = 0; i<cp.length; i++)
 			catch(CannotCompileException e)
 			{
 				throw new CannotCompileException(e.getMessage()+" ( error in "+codeToInject+" )");
-			}			System.out.println("Injected <-- "+codeToInject+" --> at line number "+lineNumber+" inside Class : "+sourceClassName);
+			}			
+			//			System.out.println("Injected <-- "+codeToInject+" --> at line number "+lineNumber+" inside Class : "+sourceClassName);
 
 		}
 
@@ -126,8 +121,8 @@ for(int i = 0; i<cp.length; i++)
 			pool.removeClassPath(cp[i]);
 		}
 
-//		pool.removeClassPath(new ClassClassPath(cc.getClass()));
-//		pool.removeClassPath(pool.insertClassPath(JarPath));
+		//		pool.removeClassPath(new ClassClassPath(cc.getClass()));
+		//		pool.removeClassPath(pool.insertClassPath(JarPath));
 		JarHandler jarHandler = new JarHandler();
 		jarHandler.createJarFile(JarPath,destinationJarPath, b, sourceClassName+".class");
 		}
@@ -147,15 +142,15 @@ for(int i = 0; i<cp.length; i++)
 			ZipInputStream zip = new ZipInputStream(new FileInputStream(jarPath)) ;
 			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) 
 			{
-			    if (entry.getName().contains(className)) 
-			    {
-			    	classExists = true;
-			    }
+				if (entry.getName().contains(className)) 
+				{
+					classExists = true;
+				}
 			}
 			zip.close();
 			jarFileStream.close();
 		}
-			 catch (Exception e) {
+		catch (Exception e) {
 			System.out.println("ClassPath : "+jarPath+"doesn't exist");
 			e.printStackTrace();
 		}
@@ -163,8 +158,8 @@ for(int i = 0; i<cp.length; i++)
 		return classExists;
 
 
-		
-		
+
+
 	}
 
 }
