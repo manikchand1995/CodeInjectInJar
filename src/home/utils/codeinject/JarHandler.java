@@ -10,9 +10,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
-import org.apache.commons.io.FileUtils;
-
 import javassist.NotFoundException;
+
+import org.apache.commons.io.FileUtils;
 public class JarHandler{
 	public void replaceJarFile(String jarPathAndName,byte[] fileByteCode,String fileName) throws IOException, NotFoundException {
 		if(new File(jarPathAndName).exists()) 
@@ -44,10 +44,10 @@ public class JarHandler{
 				} catch (Exception ex) {
 					System.out.println(ex);
 
-					// Add a stub entry here, so that the jar will close without an
+					// Add a dummy entry here, so that the jar will close without an
 					// exception.
 
-					tempJar.putNextEntry(new JarEntry("stub"));
+					tempJar.putNextEntry(new JarEntry("dummy"));
 				}
 
 
@@ -81,7 +81,7 @@ public class JarHandler{
 				// IMportant so the jar will close without an
 				// exception.
 
-				tempJar.putNextEntry(new JarEntry("stub"));
+				tempJar.putNextEntry(new JarEntry("dummy"));
 			}
 			finally {
 				tempJar.close();
@@ -100,7 +100,8 @@ public class JarHandler{
 		if (jarWasUpdated) {            
 			if(jarFile.delete()){
 				tempJarFile.renameTo(jarFile);
-				System.out.println("injected code inside "+jarPathAndName);
+				//				System.out.println("injected code inside "+jarPathAndName);
+				System.out.println("successful");
 			}else
 				System.out.println("Could Not Delete JAR File");
 		}}
@@ -140,10 +141,10 @@ public class JarHandler{
 				} catch (Exception ex) {
 					System.out.println(ex);
 
-					// Add a stub entry here, so that the jar will close without an
+					// Add a dummy entry here, so that the jar will close without an
 					// exception.
 
-					tempJar.putNextEntry(new JarEntry("stub"));
+					tempJar.putNextEntry(new JarEntry("dummy"));
 				}
 
 
@@ -178,7 +179,7 @@ public class JarHandler{
 				// IMportant so the jar will close without an
 				// exception.
 
-				tempJar.putNextEntry(new JarEntry("stub"));
+				tempJar.putNextEntry(new JarEntry("dummy"));
 			}
 			finally {
 				tempJar.close();
@@ -199,7 +200,9 @@ public class JarHandler{
 			{
 				FileUtils.copyFile((tempJarFile), new File(outputJarName));
 				tempJarFile.delete();
-			System.out.println("injected code inside "+outputJarName);}
+				//			System.out.println("injected code inside "+outputJarName);
+				System.out.println("successful");
+			}
 			else{throw new Exception(outputJarName.substring(0,outputJarName.lastIndexOf("/"))+" is not a valid directory");}
 
 		}
@@ -215,8 +218,8 @@ public class JarHandler{
 	{
 		destinationJarPath =destinationJarPath.substring(0,destinationJarPath.lastIndexOf("/"));
 		if((new File(destinationJarPath)).exists())
-			{return true;}
+		{return true;}
 		else
-			{return false;}
+		{return false;}
 	}
 }
