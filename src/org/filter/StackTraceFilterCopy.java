@@ -25,24 +25,27 @@ import java.util.logging.Logger;
  * 	......
  * 	e.printStackTrace();	//prints the entire stacktrace without any filteration
  * 	Stack.printStackTrace(e);	//prints after applying default filter. Refer {@linkplain #printStackTrace(Throwable)}
+ * 	Stack.printStackTrace(e,SData.ONLY_JAVA);	//prints after applying the given filter. Refer {@linkplain #printStackTrace(Throwable, List)}
  * 	Stack.setDefaultFilter(SData.NO_JAVA);	//refer {@linkplain #setDefaultFilter(String)}
  * 	Stack.resetDefaultFilter();	//refer {@linkplain #resetDefaultFilter()}
  * }
  * </pre>
  * 
  * By default,  condition is applied for Stack. 
- * This can be changed by using {@linkplain StackTraceFilter#setDefaultFilter(String)}
+ * This can be changed by using {@linkplain StackTraceFilterCopy#setDefaultFilter(String)}
  * 
  * @author mani-5328
  *
  */
-public class StackTraceFilter
+public class StackTraceFilterCopy
 {
 
 	private static List<String[]> defaultFilter;
+	static PrintWriter writer;
+	static PrintStream stream;
 	private static boolean isFilterInitiated = false;
 	private static StackFilterData sData;
-    private static Logger logger  =  Logger.getLogger(StackTraceFilter.class.getName());
+    private static Logger logger  =  Logger.getLogger(StackTraceFilterCopy.class.getName());
 
 	/**
 	 * Prints Stacktrace for the given exception 
@@ -53,24 +56,23 @@ public class StackTraceFilter
 	 */
 	public static void printStackTrace(Throwable e,String[] exclude,String[] include)
 	{
-		e.printStackTrace();
 		e.setStackTrace(getStackTrace(e, exclude, include));
-        logger.log(Level.SEVERE,"Filtered exception :",e);
+		if(writer==null && stream==null)
+		{e.printStackTrace();}
+		else
+		{
+			if(writer!=null)
+			{
+				e.printStackTrace(writer);
+			}
+			else
+			{
+				e.printStackTrace(stream); 
+			}
+
+		}
 	}
-	public static void printStackTrace(Throwable e,String[] exclude,String[] include,PrintWriter writer)
-	{
-		e.printStackTrace();
-		e.setStackTrace(getStackTrace(e, exclude, include));
-        logger.log(Level.SEVERE,"Filtered exception :",e);
-		e.printStackTrace(writer);
-	}
-	public static void printStackTrace(Throwable e,String[] exclude,String[] include,PrintStream stream)
-	{
-		e.printStackTrace();
-		e.setStackTrace(getStackTrace(e, exclude, include));
-        logger.log(Level.SEVERE,"Filtered exception :",e);
-		e.printStackTrace(stream);
-	}
+
 	public static StackTraceElement[] getStackTrace(Throwable e,String[] exclude,String[] include)
 	{
 		StackTraceElement[] trace = e.getStackTrace();
@@ -79,6 +81,23 @@ public class StackTraceFilter
 		return trace;
 	}
 
+	/**
+	 * Sets the custom {@linkplain PrintWriter} for displaying the exception
+	 * @param printWriter the printwriter instance
+	 */
+	public static void setPrintWriter(PrintWriter printWriter)
+	{
+		writer = printWriter;
+	}
+
+	/**
+	 * Sets the custom {@linkplain PrintStream} for displaying the exception
+	 * @param printStream the printstream instance
+	 */
+	public static void setPrintStream(PrintStream printStream)
+	{
+		stream = printStream;
+	}
 
 	/**
 	 * Handles the exclude part of Stack
@@ -149,42 +168,74 @@ public class StackTraceFilter
 		return output;
 	}
 
+	/**
+	 * Prints Stacktrace for the given exception 
+	 * after applying the given filter.<p>
+	 * Default filter conditions are provided in {@link StackFilterData} and 
+	 * users can also create new conditions by extending the {@linkplain StackFilterData} interface
+	 * </p>
+	 * @param e the throwable instance
+	 * @param filterCondition the filter condition for stackfilter
+	 * @see StackFilterData
+	 */
+	public static void printStackTrace(Throwable e,List<String[]> filterCondition)
+	{
+		e.setStackTrace(getStackTrace(e, filterCondition.get(0), filterCondition.get(1)));
+		if(writer==null && stream==null)
+		{e.printStackTrace();}
+		else
+		{
+			if(writer!=null)
+			{
+				e.printStackTrace(writer);
+			}
+			else
+			{
+				e.printStackTrace(stream); 
+			}
+
+		}	
+	}
+
+	public static StackTraceElement[] getStackTrace(Throwable e,List<String[]> filterCondition)
+	{
+		return getStackTrace(e, filterCondition.get(0), filterCondition.get(1));
+	}
 
 	/**
 	 * Prints Stacktrace for the given exception 
 	 * after applying the defaultfilter mentioned in {@link #defaultFilter} 
 	 * @param e the throwable instance
+	 * @see #printStackTrace(Throwable, List)
 	 */
-	public static void printStackTrace(Throwable e,PrintStream stream)
-	{
-		e.printStackTrace();
-		e.setStackTrace(getStackTrace(e));
-        logger.log(Level.SEVERE,"Filtered exception :",e);
-		e.printStackTrace(stream); 
-	}
-	
-	public static void printStackTrace(Throwable e,PrintWriter writer)
-	{
-		e.printStackTrace();
-		e.setStackTrace(getStackTrace(e));
-        logger.log(Level.SEVERE,"Filtered exception :",e);
-		e.printStackTrace(writer);
-	}
-	
 	public static void printStackTrace(Throwable e)
 	{
 		e.printStackTrace();
 		e.setStackTrace(getStackTrace(e));
         logger.log(Level.SEVERE,"Filtered exception :",e);
+		if(writer==null && stream==null)
+		{
+			e.printStackTrace();	}
+		else
+		{
+			if(writer!=null)
+			{
+				e.printStackTrace(writer);
+			}
+			else
+			{
+				e.printStackTrace(stream); 
+			}
+
+		}
 	}
-	
 
 	/**
 	 */
 	public static StackTraceElement[] getStackTrace(Throwable e)
 	{
 		checkAndInitialize();
-		return getStackTrace(e, defaultFilter.get(0),defaultFilter.get(1));
+		return getStackTrace(e, defaultFilter);
 	}
 
 	/**
@@ -196,7 +247,7 @@ public class StackTraceFilter
 	{
 		checkAndInitialize();
 		sData.setAsDefault(filterKey);
-		StackTraceFilter.defaultFilter = sData.getDefault();
+		StackTraceFilterCopy.defaultFilter = sData.getDefault();
 		isFilterInitiated=true;
 	}
 
@@ -223,6 +274,10 @@ public class StackTraceFilter
 	{
 		return traceToString(e,getStackTrace(e));
 	}
+	public static String toString(Throwable e,List<String[]> filterCondition)
+	{
+		return traceToString(e,getStackTrace(e,filterCondition));
+	}
 	public static String toString(Throwable e,String[] exclude,String[] include)
 	{
 		return traceToString(e,getStackTrace(e,exclude,include));
@@ -236,10 +291,5 @@ public class StackTraceFilter
 			exceptionString = exceptionString+("\n\t at "+trace.getClassName()+"."+trace.getMethodName()+"("+trace.getFileName()+":"+trace.getLineNumber()+")");
 		}
 		return exceptionString;
-	}
-	public List<String> getFilterNames()
-	{
-		checkAndInitialize();
-		return sData.getFilterNames();
 	}
 }

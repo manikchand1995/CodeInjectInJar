@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.filter.StackTraceFilter;
+import org.filter.StackTraceFilterCopy;
 
 public class checkWorks {
 
@@ -15,10 +15,10 @@ public class checkWorks {
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("8");
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.setDefaultFilter("8");
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			//assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
-			StackTraceFilter.printStackTrace(e);
+			StackTraceFilterCopy.printStackTrace(e);
 
 			for(int i = 0; i< traceArray.length;i++) 
 			{

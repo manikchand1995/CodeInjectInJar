@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.filter.StackTraceFilter;
+import org.filter.StackTraceFilterCopy;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -32,7 +32,7 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			
 			for(int i = 0; i< traceArray.length;i++) 
@@ -53,8 +53,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("2");
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.setDefaultFilter("2");
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			
 			for(int i = 0; i< traceArray.length;i++) 
@@ -75,8 +75,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("3");
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.setDefaultFilter("3");
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			
 			for(int i = 0; i< traceArray.length;i++) 
@@ -98,8 +98,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("4");
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.setDefaultFilter("4");
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			for(int i = 0; i< traceArray.length;i++) 
 			{
@@ -121,8 +121,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("5");
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.setDefaultFilter("5");
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			for(int i = 0; i< traceArray.length;i++) 
 			{
@@ -147,8 +147,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("6");
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.setDefaultFilter("6");
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			for(int i = 0; i< traceArray.length;i++) 
 			{
@@ -172,8 +172,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.resetDefaultFilter();
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+			StackTraceFilterCopy.resetDefaultFilter();
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			
 			for(int i = 0; i< traceArray.length;i++) 
@@ -194,7 +194,7 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e, new ArrayList<String[]>
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e, new ArrayList<String[]>
 			(Arrays.asList(new String[]{"org.eclipse"},new String[]{"com.zoho","com.adventnet"})));
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			for(int i = 0; i< traceArray.length;i++) 
@@ -219,7 +219,7 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e,new String[]{"org.eclipse"},new String[]{"com.zoho","com.adventnet"});
+			StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e,new String[]{"org.eclipse"},new String[]{"com.zoho","com.adventnet"});
 			assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 			for(int i = 0; i< traceArray.length;i++) 
 			{
@@ -243,8 +243,8 @@ public class TestStackFilter
 	try{integer = Integer.parseInt(str);}
 	catch(Exception e)
 	{
-		StackTraceFilter.setDefaultFilter("7");
-		StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+		StackTraceFilterCopy.setDefaultFilter("7");
+		StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 		assertFalse(Arrays.equals(e.getStackTrace(), traceArray));
 		
 		for(int i = 0; i< traceArray.length;i++) 
@@ -264,8 +264,8 @@ public class TestStackFilter
 	try{integer = Integer.parseInt(str);}
 	catch(Exception e)
 	{
-		StackTraceFilter.setDefaultFilter("8");
-		StackTraceElement[] traceArray = StackTraceFilter.getStackTrace(e);
+		StackTraceFilterCopy.setDefaultFilter("8");
+		StackTraceElement[] traceArray = StackTraceFilterCopy.getStackTrace(e);
 		assertTrue(Arrays.equals(e.getStackTrace(), traceArray));
 	}
 	}
@@ -275,8 +275,8 @@ public class TestStackFilter
 		try{integer = Integer.parseInt(str);}
 		catch(Exception e)
 		{
-			StackTraceFilter.setDefaultFilter("7");
-			assertEquals("java.lang.NumberFormatException: For input string: \"str\"\n\t at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)", StackTraceFilter.toString(e));
+			StackTraceFilterCopy.setDefaultFilter("7");
+			assertEquals("java.lang.NumberFormatException: For input string: \"str\"\n\t at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)", StackTraceFilterCopy.toString(e));
 		}
 	}
 	@AfterClass
